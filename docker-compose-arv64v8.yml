@@ -1,7 +1,7 @@
 version: '3.8'
 services:
   elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:8.7.1
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.7.1-arm64
     container_name: elasticsearch
     volumes:
       - elasticsearch-data:/usr/share/elasticsearch/data
@@ -18,7 +18,7 @@ services:
   kibana:
     depends_on:
       - elasticsearch
-    image: docker.elastic.co/kibana/kibana:8.7.1
+    image: docker.elastic.co/kibana/kibana:8.7.1-arm64
     container_name: kibana
     volumes:
       - kibana-data:/usr/share/kibana/data
@@ -35,7 +35,7 @@ services:
     volumes:
       - ./mosquitto.conf:/mosquitto/config/mosquitto.conf
   simulator:
-    image: massimocallisto/json-simulator:1.0.0
+    image: massimocallisto/json-simulator-arm64v8:1.0.0
     container_name: simulator
     volumes:
       - ./conf:/opt/app/json-data-generator/conf
@@ -43,7 +43,7 @@ services:
   filebeat:
     depends_on:
       - elasticsearch
-    image: docker.elastic.co/beats/filebeat:8.7.1
+    image: docker.elastic.co/beats/filebeat:8.7.1-arm64
     container_name: filebeat
     volumes:
       - ./filebeat.yml:/usr/share/filebeat/filebeat.yml
@@ -55,7 +55,7 @@ services:
   filebeat_js:
     depends_on:
       - elasticsearch
-    image: docker.elastic.co/beats/filebeat:8.7.1
+    image: docker.elastic.co/beats/filebeat:8.7.1-arm64
     container_name: filebeat_js
     volumes:
       - ./filebeat_js.yml:/usr/share/filebeat/filebeat.yml
