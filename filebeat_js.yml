@@ -1,0 +1,59 @@
+filebeat.inputs:
+  - type: mqtt
+    hosts:
+      - 'tcp://mosquitto:1883'
+    topics:
+      - /sample.it/#
+    #qos: 2
+    client_id: filebeat_mqtt
+    #username: system
+    #password: manager
+    tags:
+      - mqtt
+      - iot
+      - filebeat
+      - broker
+    #  - gps
+    enabled: true
+    fields_under_root: true
+    fields:
+      event.dataset: sensor-data
+      event.module: filebeat-mqtt
+      event.outcome: iot-sensors
+      event.category: sensor
+    processors:
+      #- decode_json_fields:
+      #    fields:
+      #      - message
+      - script:
+          lang: javascript
+          #id: sensor-data-geo
+          source: >
+            function process(event){
+              var oo = JSON.parse(event.Get("message"));
+              for(var key in oo){
+                if(Array.isArray(oo[key]))
+                  continue;
+                event.Put(key, oo[key]);
+              }
+              // Flatter
+              var m = oo.m || [];
+              for(var i = 0; i < m.length; i++){
+                event.Put(m[i].k, m[i].v);
+              }
+              event.Delete("message");
+              event.Put("script_ok", true);
+            }
+    #keep_null: false
+    index: 'js_sensor-data-%{+yyyy-MM-dd}'
+    #pipeline: sensor-data-geo
+setup.template.settings:
+  index.number_of_shards: 1
+  index.number_of_replicas: 0
+  index.codec: best_compression
+output.elasticsearch:
+  hosts:
+    - 'elasticsearch:9200'
+  protocol: http
+  #username: elastic
+  #password: changeme
