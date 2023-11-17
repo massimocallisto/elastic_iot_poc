@@ -5,7 +5,7 @@ filebeat.inputs:
     topics:
       - /sample.it/#
     #qos: 2
-    client_id: filebeat_mqtt
+    client_id: filebeat_mqtt_js
     #username: system
     #password: manager
     tags:
